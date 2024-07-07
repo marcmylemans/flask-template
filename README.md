@@ -32,42 +32,54 @@ pip install -r requirements.txt
 
 ## Creating a Basic Flask Application
 
-1. Create Your Flask App:
-
-Make a new directory for your project, and inside that, create a new Python file, app.py.
-In app.py, write a basic Flask application:
+1. Create the Blueprint File
+   
+Create a new file, e.g., new_module.py, and define your blueprint:
 
 ```python
-from flask import Flask, render_template
+from flask import Blueprint, render_template
 
-app = Flask(__name__)
+new_module = Blueprint('new_module', __name__)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+@new_module.route('/new')
+def new_route():
+    return render_template('new_module/new_route.html')
 
-if __name__ == '__main__':
-    app.run(debug=True)
 ```
 
-2. Create Templates Directory:
-
-Inside your project directory, create a folder named templates.
-Inside templates, create an index.html file. This will be your homepage.
-Write basic HTML here:
+2. Create Template for the New Route
+   
+Create the necessary template file in templates/new_module/new_route.html:
 
 ```html
+<!-- templates/new_module/new_route.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>UniFi Dashboard</title>
+    <meta charset="UTF-8">
+    <title>New Module</title>
 </head>
 <body>
-    <h1>Welcome to the UniFi Controller Purchase Dashboard</h1>
-    <!-- More HTML will go here -->
+    <h1>Welcome to the New Module!</h1>
 </body>
 </html>
 ```
+
+3. Register the New Blueprint
+   
+In app.py, import and register the new blueprint:
+
+```python
+from new_module import new_module as new_module_blueprint
+
+# Register blueprints
+app.register_blueprint(auth_blueprint, url_prefix='/auth'
+app.register_blueprint(new_module_blueprint, url_prefix='/new_module')
+```
+
+4. Test the New Route
+   
+Run the application and navigate to http://127.0.0.1:5000/new_module/new to see your new module in action.
 
 ## Run Your Flask App:
 
