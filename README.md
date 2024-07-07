@@ -100,4 +100,22 @@ python app.py
 Visit http://127.0.0.1:5000/ in your browser to see your basic web page.
 
 
+## Running the Application with Docker
 
+### Prerequisites
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+### Build and Run
+
+1. Build the Docker image:
+   
+   ```bash
+   docker-compose build
+   ```
+3. Run the Docker container:
+   
+   ```bash
+   docker-compose up
+   ```
+The application will be accessible at http://localhost:5000.
