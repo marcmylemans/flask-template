@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to UniFi Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Vertical Tabs -->
+        <div class="col-md-3">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="true">Profile</a>
+                <a class="nav-link" id="v-pills-password-tab" data-toggle="pill" href="#v-pills-password" role="tab" aria-controls="v-pills-password" aria-selected="false">Change Password</a>
+                <!-- Add more tabs as needed -->
+            </div>
+        </div>
+        <!-- Tab Content -->
+        <div class="col-md-9">
+            <div class="tab-content" id="v-pills-tabContent">
+                <!-- Profile Tab -->
+                <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <h1>User Profile</h1>
+                    <h2>
+                        {{ user.username }}
+                        {% if user.is_admin %}
+                        <!-- Display an admin icon -->
+                        <span class="admin-icon" title="Admin User">
+                            <i class="fa fa-shield" aria-hidden="true"></i>
+                        </span>
+                        {% endif %}
+                    </h2>
+                    <p>Email: {{ user.email }}</p>
+                    <!-- OTP Section -->
+                    <h2>Two-Factor Authentication (OTP)</h2>
+                    {% if user.otp_verified %}
+                    <p>OTP is enabled for your account.</p>
+                    <form method="post">
+                        <input type="hidden" name="otp_action" value="disable">
+                        <button type="submit" class="btn btn-warning">Disable OTP</button>
+                    </form>
+                    {% else %}
+                    <p>OTP is not enabled for your account.</p>
+                    <form method="post">
+                        <input type="hidden" name="otp_action" value="enable">
+                        <button type="submit" class="btn btn-primary">Enable OTP</button>
+                    </form>
+                    {% endif %}
+                    <!-- Delete Profile Section -->
+                    <h2>Delete Profile</h2>
+                    <p>By deleting your profile, you will permanently remove your personal information.</p>
+                    <form method="post" action="{{ url_for('auth.delete_profile') }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete My Profile</button>
+                    </form>
+                </div>
+
+                <!-- Change Password Tab -->
+                <div class="tab-pane fade" id="v-pills-password" role="tabpanel" aria-labelledby="v-pills-password-tab">
+                    <h2>Change Password</h2>
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="current_password">Current Password:</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password:</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

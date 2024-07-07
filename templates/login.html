@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Login to Your Account
+                </div>
+                <div class="card-body">
+                    <form id="loginForm" action="" method="post">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.username.label(class="form-control-label") }}
+                            {{ form.username(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.password.label(class="form-control-label") }}
+                            {{ form.password(class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="ipConsentCheckbox" name="ipConsentCheckbox" required>
+                                <label class="custom-control-label" for="ipConsentCheckbox">I consent to having my IP address logged for security purposes. <a href="{{ url_for('privacy_policy') }}">Learn more</a></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-primary btn-block") }}
+                        </div>
+                    </form>
+
+                    {% if otp_required %}
+                    <div id="otpPrompt" class="otp-prompt">
+                        <form id="otpForm" method="post">
+                            <div class="form-group">
+                                <label for="otp">Enter OTP:</label>
+                                <input type="text" name="otp" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block">Verify</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var otpRequired = {{ 'true' if otp_required else 'false' }};
+        if (otpRequired) {
+            document.getElementById('otpPrompt').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+        }
+
+        document.getElementById('otpForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var otp = event.target.elements.otp.value;
+            fetch('{{ url_for("auth.two_factor_login") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ otp: otp })
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    window.location.href = '{{ url_for("index") }}';
+                } else {
+                    alert('Invalid OTP');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
