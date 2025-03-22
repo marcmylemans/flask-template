@@ -1,6 +1,6 @@
 # Backend
 
-## Settign up the Environment
+## Setting up the Environment
 
 1. Install Python
 
